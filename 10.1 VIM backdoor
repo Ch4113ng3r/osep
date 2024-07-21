@@ -17,6 +17,7 @@ echo "hacked" > /tmp/hacker.txt
 
 ------------------------------------------------
 
+Required only for Debian based systems not for ubuntu, red hat , etc.
 echo 'alias sudo ='sudo -E'' >> .bashrc
 source ~/.bashrc
 
