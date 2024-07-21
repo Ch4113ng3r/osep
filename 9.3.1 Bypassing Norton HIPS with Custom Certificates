@@ -12,3 +12,7 @@ CipherString=DEFAULT@SECLEVEL=2 -> CipherString=DEFAULT
 Use multi/hnadler
 set HandlerSSLCert /home/kali/self_cert/nasa.pem
 exploit
+
+
+dnscat2 for dns tunneling
+we can open rdp via dns tunneling when we get shell
