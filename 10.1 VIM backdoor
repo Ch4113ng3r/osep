@@ -9,7 +9,7 @@ vi
 ----------------------------------------------
 
 Using vmscript -> vi .vmscript
-source ~/.vimscript OR :silent source ~/.vimscript
+source ~/.vimscript OR :silent !source ~/.vimscript
 
 vi .vmscript
 !/bin/bash
