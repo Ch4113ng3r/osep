@@ -4,4 +4,7 @@ System.Workflow.ComponentModel.dll assembly  --> C:\Windows\Microsoft.NET\Framew
 
 Using C:\Windows\Microsoft.Net\Framework64\v4.0.30319\Microsoft.Workflow.Compiler.exe run.xml results.xml to compile a C# code but it will write the code to disk and that's a downfall.
 
-THis is an alternate method in case previous InstallUtil method won't work
+This is an alternate method in case previous InstallUtil method won't work
+Extra mile also suggested:
+Extra Mile
+Perform online research to understand and execute an AppLocker bypass that allows arbitrary C# code execution by abusing the MSBuild1 native binary.
