@@ -1,3 +1,7 @@
 # Bypassing AppLocker with C#
 
 System.Workflow.ComponentModel.dll assembly  --> C:\Windows\Microsoft.NET\Framework64\v4.0.30319
+
+Using C:\Windows\Microsoft.Net\Framework64\v4.0.30319\Microsoft.Workflow.Compiler.exe run.xml results.xml to compile a C# code but it will write the code to disk and that's a downfall.
+
+THis is an alternate method in case previous InstallUtil method won't work
