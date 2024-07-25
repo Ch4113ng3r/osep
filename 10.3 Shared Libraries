@@ -1,5 +1,5 @@
 IN this we will exploit the way shared libraries are used. we can create our own shared library and create environemtn variables so that whenever user run particular program
-as root, our shared library will be called
+as root, our shared library will be called. THere is a possibility that some original program may crash with this 
 
 Compilation:
 
