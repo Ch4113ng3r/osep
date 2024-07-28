@@ -28,3 +28,6 @@ create a new process in the context of the impersonated user.
 
 -> A pipe is a section of shared memory inside the kernel that processes can use for communication. One process can create a pipe (the pipe server) 
 while other processes can connect to the pipe (pipe clients) and read/write information from/to it, depending on the configured access rights for a given pipe.
+
+-> Anonymous8 pipes are typically used for communication between parent and child processes, while named9 pipes are more broadly used. 
+In our examples we'll make use of named pipes, because they have more functionality and more importantly, they support impersonation.
