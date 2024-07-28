@@ -31,3 +31,9 @@ while other processes can connect to the pipe (pipe clients) and read/write info
 
 -> Anonymous8 pipes are typically used for communication between parent and child processes, while named9 pipes are more broadly used. 
 In our examples we'll make use of named pipes, because they have more functionality and more importantly, they support impersonation.
+
+
+->The attack that we are going to simulate can force the SYSTEM account to connect to a named pipe set up by an attacker.
+
+While the technique was originally developed as part of an Active Directory attack, it can also be used locally. 
+It is based on the print spooler service, which is started by default and runs in a SYSTEM context.
