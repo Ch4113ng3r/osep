@@ -12,4 +12,14 @@ mpersonation tokens have four levels: Anonymous, Identification, Impersonation, 
 For example, let's assume a user authenticates to a web server and performs an action on that server that requires a database lookup. The web service could use delegation to pass authentication to the database server "through" the web server.
 
 
-In the past, security researchers have identified1 nine different privileges that may allow for privilege escalation from medium integrity to either high integrity or system integrity, or enable compromise of processes running as another authenticated user.
+In the past, security researchers have identified1 nine different privileges that may allow for privilege escalation from medium integrity to either high
+integrity or system integrity, or enable compromise of processes running as another authenticated user.
+
+-> SeImpersonatePrivilege allows us to impersonate any token for which we can get a reference, or handle. 
+This privilege is quite interesting since the built-in Network Service account, the LocalService3 account, and the default IIS account have it assigned by default. 
+Because of this, gaining code execution on a web server will often give us access to this privilege and potentially offer the possibility to escalate our access.
+
+-> If we have the SeImpersonatePrivilege privilege we can often use the Win32 DuplicateTokenEx4 API to create a primary token from an impersonation token and 
+create a new process in the context of the impersonated user.
+
+-> When no tokens related to other user accounts are available in memory, we can likely force the SYSTEM account to give us a token that we can impersonate.
