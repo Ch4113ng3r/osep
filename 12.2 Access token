@@ -23,3 +23,8 @@ Because of this, gaining code execution on a web server will often give us acces
 create a new process in the context of the impersonated user.
 
 -> When no tokens related to other user accounts are available in memory, we can likely force the SYSTEM account to give us a token that we can impersonate.
+
+-> Pipes are a means of interprocess communication (IPC),7 just like RPC, COM, or even network sockets.
+
+-> A pipe is a section of shared memory inside the kernel that processes can use for communication. One process can create a pipe (the pipe server) 
+while other processes can connect to the pipe (pipe clients) and read/write information from/to it, depending on the configured access rights for a given pipe.
